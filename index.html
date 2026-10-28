@@ -3,28 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KadhaiVerse – Interactive Moral Storytelling Website</title>
+    <title>StoryZone – Interactive Moral Storytelling Website</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Fredoka:wght@500;600;700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Fredoka:wght@500;600;700;800&family=Quicksand:wght@600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
-            --primary: #FF5E7E;
-            --primary-light: #FFA3B5;
-            --secondary: #FFA41B;
-            --accent: #00D2D3;
-            --mint: #1DD1A1;
-            --sky: #54A0FF;
-            --wood-dark: #5D4037;
-            --bg-main: #FFFDF4;
+            --primary: #FF3366;
+            --primary-light: #FF85A2;
+            --secondary: #FF9F1A;
+            --accent: #00E5FF;
+            --mint: #00F298;
+            --sky: #3888FF;
+            --purple: #9B51E0;
+            --yellow: #FFD200;
+            --wood-dark: #4A2E18;
+            --bg-main: #F6F9FF;
             --bg-card: #FFFFFF;
-            --border-color: #2D3436;
-            --text-dark: #2D3436;
-            --shadow-pop: 5px 5px 0px #2D3436;
-            --shadow-pop-sm: 3px 3px 0px #2D3436;
-            --radius-md: 18px;
-            --radius-lg: 28px;
+            --border-color: #1F2438;
+            --text-dark: #1F2438;
+            --shadow-3d: 0 10px 0 var(--border-color), 0 16px 25px rgba(0,0,0,0.22);
+            --shadow-3d-sm: 0 5px 0 var(--border-color), 0 8px 15px rgba(0,0,0,0.18);
+            --radius-md: 20px;
+            --radius-lg: 32px;
             --radius-full: 9999px;
             --font-display: 'Bubblegum Sans', cursive, sans-serif;
             --font-head: 'Fredoka', cursive, sans-serif;
@@ -32,12 +34,12 @@
         }
 
         [data-theme="dark"] {
-            --bg-main: #141226;
-            --bg-card: #23203C;
+            --bg-main: #0E0C1F;
+            --bg-card: #1A1733;
             --border-color: #FFEAA7;
             --text-dark: #FDFEFE;
-            --shadow-pop: 5px 5px 0px #FFEAA7;
-            --shadow-pop-sm: 3px 3px 0px #FFEAA7;
+            --shadow-3d: 0 10px 0 #FFEAA7, 0 16px 28px rgba(255,234,167,0.28);
+            --shadow-3d-sm: 0 5px 0 #FFEAA7, 0 8px 16px rgba(255,234,167,0.2);
         }
 
         * {
@@ -51,6 +53,10 @@
         body {
             font-family: var(--font-body);
             background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 51, 102, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 50% 50%, rgba(255, 210, 0, 0.06) 0%, transparent 50%);
             color: var(--text-dark);
             min-height: 100vh;
             display: flex;
@@ -67,37 +73,36 @@
             height: 100vh;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.75;
+            opacity: 0.85;
         }
 
         .container {
             width: 92%;
-            max-width: 1200px;
+            max-width: 1220px;
             margin: 0 auto;
             position: relative;
             z-index: 10;
         }
 
         .hidden { display: none !important; }
-        .text-center { text-align: center; }
 
         /* Splash Intro */
         #splashScreen {
             position: fixed;
             inset: 0;
             z-index: 9999;
-            background: radial-gradient(circle at center, rgba(255, 159, 243, 0.45), rgba(84, 160, 255, 0.65) 65%, #181236);
+            background: radial-gradient(circle at 50% 30%, #FF6584, #7053FF 55%, #120E38 95%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
-            transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
-            backdrop-filter: blur(8px);
+            transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1);
+            perspective: 1200px;
         }
 
         #splashScreen.slide-up {
-            transform: translateY(-100%);
+            transform: translateY(-100%) rotateX(15deg);
             pointer-events: none;
         }
 
@@ -106,79 +111,93 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 920px;
+            max-width: 900px;
+            transform-style: preserve-3d;
         }
 
         .splash-title-box {
             position: relative;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
             animation: floatTitle 3s ease-in-out infinite alternate;
+            transform: translateZ(50px);
         }
 
         @keyframes floatTitle {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-12px); }
+            0% { transform: translateY(0) rotate(-1deg); }
+            100% { transform: translateY(-16px) rotate(1.5deg); }
         }
 
         .splash-title {
             font-family: var(--font-display);
-            font-size: clamp(3.4rem, 8.5vw, 6rem);
+            font-size: clamp(3.8rem, 9.5vw, 6.8rem);
             color: #FF5E7E;
-            text-shadow: 4px 4px 0px #2D3436;
-            letter-spacing: 2px;
+            text-shadow: 
+                0 1px 0 #FFF,
+                0 3px 0 #2D3436,
+                0 6px 0 #2D3436,
+                0 9px 0 #2D3436,
+                0 15px 30px rgba(0,0,0,0.5);
+            letter-spacing: 3px;
             line-height: 1;
         }
 
         .splash-title span.hl {
             color: #FFA41B;
-            text-shadow: 4px 4px 0px #2D3436;
+            text-shadow: 
+                0 1px 0 #FFF,
+                0 3px 0 #2D3436,
+                0 6px 0 #2D3436,
+                0 9px 0 #2D3436,
+                0 15px 30px rgba(0,0,0,0.5);
         }
 
         .bheem-welcome-container {
-            align-self: flex-start;
-            margin: 0.8rem 0 2rem 1.5rem;
+            margin: 0.5rem 0 2.2rem;
             display: flex;
-            align-items: flex-end;
-            gap: 1.2rem;
-            max-width: 600px;
-            animation: bounceInLeft 0.8s ease-out;
+            align-items: center;
+            gap: 1.5rem;
+            max-width: 650px;
+            animation: bounceIn3D 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateZ(30px);
         }
 
-        @keyframes bounceInLeft {
-            0% { transform: translateX(-50px); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
+        @keyframes bounceIn3D {
+            0% { transform: scale(0.6) translateY(50px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
         }
 
         .bheem-character-card {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #FF9F43, #EE5253);
+            width: 110px;
+            height: 110px;
+            background: linear-gradient(145deg, #FF9F43, #FF4757);
             border-radius: 50%;
-            border: 4px solid #2D3436;
-            box-shadow: var(--shadow-pop-sm);
+            border: 5px solid #2D3436;
+            box-shadow: 0 8px 0 #2D3436, 0 14px 20px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             flex-shrink: 0;
-            animation: pulseBheem 2s infinite alternate;
+            animation: pulseBheem 2.2s infinite alternate;
         }
 
         @keyframes pulseBheem {
-            0% { transform: translateY(0) rotate(-2deg); }
-            100% { transform: translateY(-6px) rotate(2deg); }
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-8px) scale(1.05); }
         }
 
         .bheem-avatar-inner {
-            font-size: 3.6rem;
+            font-size: 4rem;
+            filter: drop-shadow(0 6px 6px rgba(0,0,0,0.25));
         }
 
         .bheem-laddoo-badge {
             position: absolute;
-            top: -4px;
-            right: -4px;
-            font-size: 1.5rem;
+            top: -6px;
+            right: -6px;
+            font-size: 1.8rem;
             animation: spinLaddoo 4s linear infinite;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
 
         @keyframes spinLaddoo {
@@ -188,10 +207,10 @@
 
         .bheem-dialogue-bubble {
             background: #FFFFFF;
-            border: 3px solid #2D3436;
-            border-radius: 20px 20px 20px 4px;
-            padding: 1.1rem 1.4rem;
-            box-shadow: 5px 5px 0px #2D3436;
+            border: 4px solid #2D3436;
+            border-radius: 26px 26px 26px 6px;
+            padding: 1.2rem 1.6rem;
+            box-shadow: 0 8px 0 #2D3436, 0 12px 24px rgba(0,0,0,0.25);
             position: relative;
             text-align: left;
         }
@@ -200,72 +219,70 @@
             content: '';
             position: absolute;
             bottom: 12px;
-            left: -12px;
-            border-width: 10px 12px 10px 0;
+            left: -14px;
+            border-width: 12px 14px 12px 0;
             border-style: solid;
             border-color: transparent #2D3436 transparent transparent;
             display: block;
-            width: 0;
         }
 
         .bheem-dialogue-bubble::before {
             content: '';
             position: absolute;
             bottom: 14px;
-            left: -8px;
-            border-width: 8px 10px 8px 0;
+            left: -9px;
+            border-width: 10px 11px 10px 0;
             border-style: solid;
             border-color: transparent #FFFFFF transparent transparent;
             display: block;
-            width: 0;
             z-index: 2;
         }
 
         .bheem-speaker-name {
             font-family: var(--font-head);
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             font-weight: 800;
             color: #EE5253;
-            margin-bottom: 0.15rem;
+            margin-bottom: 0.2rem;
             display: flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 0.4rem;
         }
 
         .bheem-dialogue-bubble p {
             font-family: var(--font-head);
-            font-size: 1.12rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #2D3436;
-            line-height: 1.35;
+            line-height: 1.4;
         }
 
         .swipe-pill-btn {
-            background: #FFDF00;
+            background: linear-gradient(180deg, #FFE853 0%, #FFB300 100%);
             color: #2D3436;
             font-family: var(--font-head);
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: 800;
-            padding: 1rem 2.6rem;
+            padding: 1.1rem 3rem;
             border-radius: var(--radius-full);
             border: 4px solid #2D3436;
-            box-shadow: 6px 6px 0px #2D3436;
+            box-shadow: 0 9px 0 #2D3436, 0 16px 28px rgba(0,0,0,0.35);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 0.7rem;
-            animation: pulseBtn 2s infinite;
-            transition: all 0.2s ease;
+            gap: 0.8rem;
+            transition: all 0.15s ease;
+            position: relative;
         }
 
         .swipe-pill-btn:hover {
-            transform: scale(1.04) translateY(-2px);
-            background: #FFEAA7;
+            transform: translateY(-4px);
+            box-shadow: 0 13px 0 #2D3436, 0 20px 32px rgba(0,0,0,0.4);
         }
 
-        @keyframes pulseBtn {
-            0%, 100% { transform: scale(1); box-shadow: 6px 6px 0px #2D3436; }
-            50% { transform: scale(1.03); box-shadow: 8px 8px 0px #2D3436; }
+        .swipe-pill-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 3px 0 #2D3436, 0 6px 10px rgba(0,0,0,0.2);
         }
 
         /* 3D Crackers Celebration Overlay */
@@ -273,13 +290,13 @@
             position: fixed;
             inset: 0;
             z-index: 10000;
-            background: rgba(15, 10, 35, 0.88);
+            background: rgba(12, 9, 32, 0.9);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             pointer-events: none;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
         }
 
         #crackersCanvas {
@@ -293,108 +310,123 @@
             position: relative;
             z-index: 2;
             text-align: center;
-            animation: popWelcome 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: popWelcome 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes popWelcome {
-            0% { transform: scale(0.2); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            0% { transform: scale(0.3) rotate(-8deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
 
         .celebrate-welcome-banner h1 {
             font-family: var(--font-display);
-            font-size: clamp(3rem, 7vw, 5.2rem);
+            font-size: clamp(3.2rem, 8vw, 5.8rem);
             color: #FFDF00;
-            text-shadow: 4px 4px 0px #EE5253, 8px 8px 20px rgba(255, 223, 0, 0.7);
+            text-shadow: 
+                0 2px 0 #FF3366,
+                0 5px 0 #C4003E,
+                0 8px 0 #2D3436,
+                0 18px 40px rgba(255, 223, 0, 0.8);
             letter-spacing: 2px;
         }
 
         .celebrate-welcome-banner p {
             font-family: var(--font-head);
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             color: #FFFFFF;
             font-weight: 700;
-            margin-top: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            margin-top: 0.6rem;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
         }
 
-        /* Home Page Mode Selection Modal */
+        /* Mode Selection Modal */
         #modeSelectModal {
             position: fixed;
             inset: 0;
             z-index: 9998;
-            background: rgba(20, 15, 40, 0.78);
+            background: rgba(15, 12, 35, 0.82);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
         }
 
         .mode-select-box {
             background: #FFFDF4;
-            border: 6px solid #2D3436;
+            border: 6px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 2.5rem 2rem;
-            max-width: 640px;
+            padding: 2.8rem 2.2rem;
+            max-width: 680px;
             width: 100%;
             text-align: center;
-            box-shadow: 12px 12px 0px #2D3436;
-            animation: bounceInLeft 0.5s ease-out;
+            box-shadow: var(--shadow-3d);
+            animation: bounceIn3D 0.5s ease-out;
+            position: relative;
         }
 
         .mode-select-box h2 {
             font-family: var(--font-display);
-            font-size: 2.8rem;
-            color: #FF5E7E;
+            font-size: 3rem;
+            color: #FF3366;
+            text-shadow: 2px 2px 0 #FFEAA7, 4px 4px 0 var(--border-color);
             margin-bottom: 0.4rem;
         }
 
         .mode-select-box p {
             font-family: var(--font-head);
             font-size: 1.25rem;
-            color: #636E72;
+            color: #576574;
             font-weight: 700;
-            margin-bottom: 1.8rem;
+            margin-bottom: 2rem;
         }
 
         .mode-card-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.4rem;
+            gap: 1.6rem;
         }
 
         .profile-mode-card {
-            border: 4px solid #2D3436;
+            border: 5px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 1.8rem 1.2rem;
+            padding: 2rem 1.2rem;
             cursor: pointer;
-            box-shadow: var(--shadow-pop);
-            transition: all 0.2s ease;
+            box-shadow: var(--shadow-3d-sm);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-align: center;
+            position: relative;
+            transform: perspective(600px) translateZ(0);
         }
 
         .profile-mode-card:hover {
-            transform: translateY(-6px) scale(1.03);
+            transform: perspective(600px) translateY(-8px) scale(1.04) rotateX(4deg);
+            box-shadow: 0 12px 0 var(--border-color), 0 20px 25px rgba(0,0,0,0.25);
+        }
+
+        .profile-mode-card:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--border-color);
         }
 
         .card-children-theme {
-            background: linear-gradient(135deg, #FFEAA7, #FF9FF3);
+            background: linear-gradient(145deg, #FFE853, #FF9FF3);
         }
 
         .card-student-theme {
-            background: linear-gradient(135deg, #55E6C1, #74B9FF);
+            background: linear-gradient(145deg, #00F298, #54A0FF);
         }
 
         .profile-mode-card span.icon {
-            font-size: 3.8rem;
+            font-size: 4.2rem;
             display: block;
             margin-bottom: 0.5rem;
+            filter: drop-shadow(0 6px 6px rgba(0,0,0,0.2));
         }
 
         .profile-mode-card strong {
             font-family: var(--font-head);
-            font-size: 1.45rem;
+            font-size: 1.55rem;
             display: block;
             color: #2D3436;
             margin-bottom: 0.3rem;
@@ -403,64 +435,77 @@
         .profile-mode-card small {
             font-weight: 700;
             color: #2D3436;
-            font-size: 0.95rem;
+            font-size: 1rem;
             display: block;
-            line-height: 1.3;
+            line-height: 1.35;
         }
 
         .mode-count-chip {
             background: #2D3436;
             color: #FFDF00;
             font-family: var(--font-head);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 800;
-            padding: 0.2rem 0.6rem;
+            padding: 0.3rem 0.8rem;
             border-radius: var(--radius-full);
             display: inline-block;
-            margin-top: 0.6rem;
+            margin-top: 0.8rem;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.3);
         }
 
         /* Site Header */
         .site-header {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(10px);
-            border-bottom: 4px solid var(--border-color);
-            padding: 0.8rem 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 5px solid var(--border-color);
+            padding: 0.9rem 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
         }
-        [data-theme="dark"] .site-header { background: rgba(35, 32, 60, 0.92); }
+
+        [data-theme="dark"] .site-header {
+            background: rgba(26, 23, 51, 0.95);
+        }
 
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 0.8rem;
+            gap: 1rem;
         }
 
         .logo {
             font-family: var(--font-display);
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             cursor: pointer;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.5rem;
             color: var(--primary);
-            text-shadow: 2px 2px 0px #2D3436;
+            text-shadow: 2px 2px 0 #FFF, 4px 4px 0 var(--border-color);
+            transition: transform 0.2s ease;
         }
-        [data-theme="dark"] .logo { text-shadow: 2px 2px 0px #FFEAA7; }
-        .logo span.highlight { color: var(--secondary); }
+
+        .logo:hover {
+            transform: scale(1.04) rotate(-2deg);
+        }
+
+        .logo span.highlight {
+            color: var(--secondary);
+            text-shadow: 2px 2px 0 #FFF, 4px 4px 0 var(--border-color);
+        }
 
         .btn-kid {
             font-family: var(--font-head);
             font-size: 1.05rem;
-            padding: 0.45rem 1.2rem;
+            padding: 0.55rem 1.4rem;
             border-radius: var(--radius-full);
-            border: 3px solid var(--border-color);
-            box-shadow: var(--shadow-pop-sm);
+            border: 3.5px solid var(--border-color);
+            box-shadow: var(--shadow-3d-sm);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -469,297 +514,303 @@
             transition: all 0.15s ease;
             text-decoration: none;
             color: #2D3436;
-            font-weight: 700;
+            font-weight: 800;
+            position: relative;
         }
+
+        .btn-kid:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 var(--border-color), 0 10px 18px rgba(0,0,0,0.2);
+        }
+
         .btn-kid:active {
-            transform: translate(2px, 2px);
-            box-shadow: 0px 0px 0px transparent;
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 var(--border-color);
         }
-        .btn-pink { background: var(--primary); color: white; }
-        .btn-mint { background: var(--mint); color: white; }
-        .btn-yellow { background: #FFDF00; color: #2D3436; }
-        .btn-sky { background: var(--sky); color: white; }
+
+        .btn-pink { background: linear-gradient(180deg, #FF6B8B, #FF3366); color: white; }
+        .btn-mint { background: linear-gradient(180deg, #2ED573, #10AC84); color: white; }
+        .btn-yellow { background: linear-gradient(180deg, #FFE853, #FFB300); color: #2D3436; }
+        .btn-sky { background: linear-gradient(180deg, #70A1FF, #1E90FF); color: white; }
 
         .current-mode-badge {
-            background: #FFEAA7;
-            border: 3px solid var(--border-color);
-            padding: 0.4rem 1rem;
+            background: linear-gradient(145deg, #FFEAA7, #FFD32A);
+            border: 3.5px solid var(--border-color);
+            padding: 0.45rem 1.2rem;
             border-radius: var(--radius-full);
             font-family: var(--font-head);
             font-weight: 800;
-            font-size: 0.95rem;
+            font-size: 0.98rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-3d-sm);
+            transition: transform 0.15s ease;
         }
 
-        /* 3D Hero & Library */
+        .current-mode-badge:hover {
+            transform: scale(1.05) translateY(-2px);
+        }
+
+        /* 3D Hero Banner */
         .hero-banner-3d {
-            background: linear-gradient(135deg, rgba(255, 159, 243, 0.9), rgba(254, 202, 87, 0.9));
-            border: 4px solid var(--border-color);
+            background: linear-gradient(135deg, #FF80AB 0%, #FFB74D 50%, #4DD0E1 100%);
+            border: 5px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 2.2rem;
-            margin: 1.8rem 0;
-            box-shadow: var(--shadow-pop);
+            padding: 2.6rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-3d);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
         }
+
+        .hero-banner-3d::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -30%;
+            width: 160%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 60%);
+            pointer-events: none;
+        }
+
         .hero-text h1 {
             font-family: var(--font-display);
-            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-size: clamp(2.4rem, 5.5vw, 3.8rem);
             color: #2D3436;
-            text-shadow: 2px 2px 0px #FFFFFF;
-            line-height: 1.1;
-            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 0 #FFF, 5px 5px 0 rgba(0,0,0,0.15);
+            line-height: 1.15;
+            margin-bottom: 0.6rem;
         }
+
         .hero-text p {
-            font-size: 1.15rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: #2D3436;
-            max-width: 580px;
+            max-width: 620px;
+            line-height: 1.45;
         }
+
         .hero-badge-count {
             background: #FFDF00;
             color: #2D3436;
-            border: 3px solid #2D3436;
-            padding: 0.25rem 0.8rem;
+            border: 3.5px solid #2D3436;
+            padding: 0.35rem 1rem;
             border-radius: var(--radius-full);
             font-family: var(--font-head);
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 800;
             display: inline-block;
-            margin-bottom: 0.7rem;
+            margin-bottom: 0.8rem;
+            box-shadow: 0 4px 0 #2D3436;
         }
 
         .magic-bar {
             background: var(--bg-card);
-            border: 4px solid var(--border-color);
+            border: 5px solid var(--border-color);
             border-radius: var(--radius-full);
-            padding: 0.6rem 1.2rem;
-            box-shadow: var(--shadow-pop);
-            margin-bottom: 2rem;
+            padding: 0.75rem 1.6rem;
+            box-shadow: var(--shadow-3d-sm);
+            margin-bottom: 2.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.2rem;
             flex-wrap: wrap;
         }
+
         .magic-bar input {
             border: none;
             outline: none;
             font-family: var(--font-body);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
             background: transparent;
             flex-grow: 1;
             color: var(--text-dark);
         }
+
         .magic-bar select {
-            border: 3px solid var(--border-color);
+            border: 3.5px solid var(--border-color);
             background: #FFDF00;
             font-family: var(--font-head);
-            font-weight: 700;
-            padding: 0.45rem 0.9rem;
+            font-weight: 800;
+            padding: 0.55rem 1.2rem;
             border-radius: var(--radius-full);
             outline: none;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            box-shadow: 0 4px 0 var(--border-color);
         }
 
+        /* 3D Story Card Grid */
         .story-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 2.2rem;
             margin-bottom: 4rem;
+            perspective: 1000px;
         }
+
         .story-card {
             background: var(--bg-card);
-            border: 4px solid var(--border-color);
+            border: 5px solid var(--border-color);
             border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-pop);
+            box-shadow: var(--shadow-3d-sm);
             overflow: hidden;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
+            transform: translateZ(0);
         }
+
         .story-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 8px 8px 0px var(--border-color);
+            transform: translateY(-10px) scale(1.025);
+            box-shadow: var(--shadow-3d);
         }
+
         .story-thumb-box {
-            height: 180px;
-            border-bottom: 4px solid var(--border-color);
+            height: 190px;
+            border-bottom: 5px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
+            overflow: hidden;
         }
+
+        .story-thumb-box span.icon-3d {
+            font-size: 5rem;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.25));
+            transition: transform 0.3s ease;
+        }
+
+        .story-card:hover .story-thumb-box span.icon-3d {
+            transform: scale(1.15) rotate(5deg);
+        }
+
         .card-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--mint);
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(145deg, #00F298, #10AC84);
             color: white;
             font-family: var(--font-head);
-            font-size: 0.85rem;
-            padding: 0.25rem 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 800;
+            padding: 0.3rem 0.9rem;
             border-radius: var(--radius-full);
-            border: 2px solid var(--border-color);
+            border: 2.5px solid var(--border-color);
+            box-shadow: 0 4px 0 var(--border-color);
         }
-        .story-body { padding: 1.25rem; }
+
+        .story-body { padding: 1.5rem; }
+
         .story-body h3 {
             font-family: var(--font-display);
-            font-size: 1.65rem;
-            margin-bottom: 0.35rem;
+            font-size: 1.75rem;
+            margin-bottom: 0.4rem;
             color: var(--text-dark);
+            line-height: 1.25;
         }
+
         .story-moral-chip {
             background: #FFEAA7;
             color: #2D3436;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 800;
-            padding: 0.25rem 0.7rem;
-            border-radius: 8px;
+            padding: 0.3rem 0.8rem;
+            border-radius: 10px;
             display: inline-block;
-            margin-bottom: 0.7rem;
-            border: 2px solid var(--border-color);
+            margin-bottom: 0.8rem;
+            border: 2.5px solid var(--border-color);
+            box-shadow: 0 3px 0 var(--border-color);
         }
 
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            backdrop-filter: blur(6px);
-        }
-        .mode-popup {
-            background: #FFFDF4;
-            border: 5px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 10px 10px 0px var(--border-color);
-            animation: popUp 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popUp {
-            from { transform: scale(0.7); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .mode-popup h2 {
-            font-family: var(--font-display);
-            font-size: 2.2rem;
-            margin-bottom: 0.4rem;
-            color: #2D3436;
-        }
-        .mode-choice-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        .mode-card {
-            border: 3px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 1.2rem 0.8rem;
-            cursor: pointer;
-            box-shadow: var(--shadow-pop-sm);
-            transition: all 0.15s ease;
-        }
-        .mode-card:hover { transform: translateY(-4px); }
-        .mode-card.read-mode { background: #55E6C1; }
-        .mode-card.narrate-mode { background: #FF9FF3; }
-        .mode-card span.icon { font-size: 3rem; display: block; margin-bottom: 0.3rem; }
-        .mode-card strong { font-family: var(--font-head); font-size: 1.2rem; display: block; color: #2D3436; }
-        .mode-card small { font-weight: 700; color: #2D3436; font-size: 0.85rem; }
-
-        /* Story Stage */
+        /* 3D Story Stage */
         .stage-container {
-            max-width: 880px;
-            margin: 1.2rem auto 3rem;
+            max-width: 900px;
+            margin: 1.5rem auto 3.5rem;
         }
+
         .stage-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
             flex-wrap: wrap;
-            gap: 0.6rem;
+            gap: 0.8rem;
         }
 
         .narration-speed-bar {
             background: var(--bg-card);
-            border: 3px solid var(--border-color);
+            border: 3.5px solid var(--border-color);
             border-radius: var(--radius-full);
-            padding: 0.35rem 1rem;
-            box-shadow: var(--shadow-pop-sm);
+            padding: 0.45rem 1.2rem;
+            box-shadow: var(--shadow-3d-sm);
             display: inline-flex;
             align-items: center;
             gap: 0.6rem;
             font-family: var(--font-head);
-            font-weight: 700;
-            font-size: 0.9rem;
+            font-weight: 800;
+            font-size: 0.95rem;
         }
+
         .speed-btn {
-            background: #FFDF00;
-            border: 2px solid var(--border-color);
+            background: #FFEAA7;
+            border: 2.5px solid var(--border-color);
             border-radius: var(--radius-full);
-            padding: 0.2rem 0.65rem;
+            padding: 0.25rem 0.8rem;
             cursor: pointer;
             font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             transition: all 0.15s ease;
         }
+
         .speed-btn.active {
             background: var(--primary);
             color: white;
+            box-shadow: 0 3px 0 var(--border-color);
+            transform: translateY(-2px);
         }
 
         .comic-frame-card {
             position: relative;
             background: #FFFFFF;
-            border: 5px solid #2D3436;
-            border-radius: 24px;
-            box-shadow: 8px 8px 0px #2D3436;
+            border: 6px solid var(--border-color);
+            border-radius: 28px;
+            box-shadow: var(--shadow-3d);
             overflow: hidden;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
         }
 
         .comic-art-viewport {
             position: relative;
             width: 100%;
-            height: 420px;
+            height: 440px;
             background: #000000;
             overflow: hidden;
-        }
-        .comic-art-svg {
-            width: 100%;
-            height: 100%;
-            display: block;
         }
 
         .scene-number-circle {
             position: absolute;
-            top: 14px;
-            left: 14px;
-            width: 44px;
-            height: 44px;
+            top: 16px;
+            left: 16px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            background: #FFC107;
-            border: 3px solid #2D3436;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            background: #FFDF00;
+            border: 4px solid var(--border-color);
+            box-shadow: 0 5px 0 var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: var(--font-head);
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 800;
             color: #2D3436;
             z-index: 10;
@@ -771,173 +822,180 @@
             right: 20px;
             background: #FFFFFF;
             color: #1E272E;
-            border: 3px solid #2D3436;
-            padding: 0.65rem 1.1rem;
-            border-radius: 20px;
+            border: 3.5px solid var(--border-color);
+            padding: 0.8rem 1.3rem;
+            border-radius: 22px;
             font-family: var(--font-head);
-            font-size: 1rem;
-            font-weight: 700;
-            box-shadow: 3px 3px 0px rgba(0,0,0,0.25);
+            font-size: 1.05rem;
+            font-weight: 800;
+            box-shadow: 0 6px 0 var(--border-color);
             z-index: 10;
-            max-width: 280px;
+            max-width: 320px;
             text-align: center;
-        }
-        .comic-speech-bubble::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 20px;
-            border-width: 10px 10px 0 0;
-            border-style: solid;
-            border-color: #FFFFFF transparent;
-            display: block;
-            width: 0;
         }
 
         .comic-narration-overlay {
             position: absolute;
-            bottom: 8px;
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
             width: 94%;
-            background: rgba(18, 18, 18, 0.78);
-            border: 1.5px solid rgba(255, 255, 255, 0.25);
-            border-radius: 10px;
-            padding: 0.45rem 1rem;
+            background: rgba(18, 18, 18, 0.86);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            padding: 0.65rem 1.2rem;
             text-align: center;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
             z-index: 10;
         }
+
         .comic-narration-overlay p {
             color: #FFFFFF;
-            font-size: 0.96rem;
-            font-weight: 600;
-            line-height: 1.35;
-            letter-spacing: 0.15px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.4;
             margin: 0;
         }
 
+        /* 3D Wooden Moral Board */
         .wooden-moral-board {
             position: relative;
-            background: #EFEBE9;
-            border: 5px solid #2D3436;
-            border-radius: 24px;
-            padding: 2.4rem 1.5rem;
+            background: linear-gradient(135deg, #FFEAA7, #FDCB6E);
+            border: 6px solid var(--border-color);
+            border-radius: 28px;
+            padding: 2.8rem 1.8rem;
             text-align: center;
-            box-shadow: 8px 8px 0px #2D3436;
-            margin-bottom: 1.5rem;
-            background-image: radial-gradient(#D7CCC8 20%, transparent 20%);
-            background-size: 18px 18px;
+            box-shadow: var(--shadow-3d);
+            margin-bottom: 2rem;
         }
+
         .wooden-sign-header {
             display: inline-block;
             background: #5D4037;
             color: #FFD54F;
-            border: 3px solid #3E2723;
-            border-radius: 10px;
-            padding: 0.5rem 2.4rem;
+            border: 4px solid #3E2723;
+            border-radius: 14px;
+            padding: 0.6rem 2.8rem;
             font-family: var(--font-head);
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 800;
             letter-spacing: 2px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            margin-bottom: 1.2rem;
+            box-shadow: 0 6px 0 #3E2723, 0 10px 15px rgba(0,0,0,0.3);
+            margin-bottom: 1.5rem;
         }
+
         .parchment-quote-box {
             background: #FFF8E1;
-            border: 3px solid #8D6E63;
-            border-radius: 18px;
-            padding: 1.5rem;
-            max-width: 620px;
-            margin: 0 auto 1.4rem;
-            box-shadow: inset 0 0 12px rgba(141, 110, 99, 0.2);
+            border: 4px solid #8D6E63;
+            border-radius: 20px;
+            padding: 1.8rem;
+            max-width: 660px;
+            margin: 0 auto 1.6rem;
+            box-shadow: 0 6px 0 #8D6E63, inset 0 0 15px rgba(141, 110, 99, 0.25);
         }
+
         .parchment-quote-box h3 {
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             font-family: var(--font-head);
             color: #3E2723;
             font-weight: 800;
-            line-height: 1.35;
+            line-height: 1.4;
         }
 
         .action-icon-bar {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: 1.4rem;
+            margin-top: 1.2rem;
             flex-wrap: wrap;
         }
+
         .circle-nav-btn {
-            width: 56px;
-            height: 56px;
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
-            border: 3.5px solid #2D3436;
-            box-shadow: 3.5px 3.5px 0px #2D3436;
+            border: 4px solid var(--border-color);
+            box-shadow: 0 6px 0 var(--border-color), 0 10px 18px rgba(0,0,0,0.2);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: white;
             transition: all 0.15s ease;
         }
-        .circle-nav-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 0px 0px 0px transparent;
+
+        .circle-nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 var(--border-color), 0 14px 22px rgba(0,0,0,0.25);
         }
-        .circle-blue { background: #54A0FF; }
-        .circle-purple { background: #A55EEA; }
-        .circle-green { background: #2ECC71; }
-        .circle-orange { background: #FF9F43; }
+
+        .circle-nav-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--border-color);
+        }
+
+        .circle-blue { background: linear-gradient(145deg, #70A1FF, #1E90FF); }
+        .circle-purple { background: linear-gradient(145deg, #C56CF0, #7D5FFF); }
+        .circle-green { background: linear-gradient(145deg, #2ED573, #10AC84); }
+        .circle-orange { background: linear-gradient(145deg, #FF9F43, #EE5253); }
 
         /* Quiz Stage */
         .quiz-stage {
             background: var(--bg-card);
-            border: 4px solid var(--border-color);
+            border: 5px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 2rem;
-            box-shadow: var(--shadow-pop);
-            margin-bottom: 2rem;
+            padding: 2.4rem;
+            box-shadow: var(--shadow-3d);
+            margin-bottom: 2.5rem;
         }
+
         .quiz-option {
             background: #FFF9E6;
-            border: 3px solid var(--border-color);
+            border: 3.5px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 1rem;
-            margin: 0.8rem 0;
-            font-size: 1.15rem;
+            padding: 1.1rem 1.4rem;
+            margin: 1rem 0;
+            font-size: 1.2rem;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: var(--shadow-pop-sm);
+            box-shadow: var(--shadow-3d-sm);
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            transition: all 0.15s ease;
+            gap: 1rem;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .quiz-option:hover { background: #FECA57; transform: translateX(5px); }
-        .quiz-option.active { background: #55E6C1; border-color: var(--border-color); }
+
+        .quiz-option:hover {
+            background: #FFE853;
+            transform: translateX(8px) translateY(-2px);
+            box-shadow: 0 8px 0 var(--border-color);
+        }
+
+        .quiz-option.active {
+            background: #00F298;
+            box-shadow: 0 6px 0 var(--border-color);
+        }
 
         @media (max-width: 768px) {
-            .bheem-welcome-container { margin: 0.6rem 0 1.2rem 0; flex-direction: column; align-items: flex-start; }
-            .hero-banner-3d { flex-direction: column; text-align: center; gap: 0.8rem; }
-            .comic-art-viewport { height: 320px; }
-            .comic-speech-bubble { font-size: 0.9rem; padding: 0.4rem 0.8rem; max-width: 200px; }
-            .comic-narration-overlay p { font-size: 0.86rem; }
-            .parchment-quote-box h3 { font-size: 1.25rem; }
+            .bheem-welcome-container { margin: 0.6rem 0 1.5rem 0; flex-direction: column; align-items: flex-start; }
+            .hero-banner-3d { flex-direction: column; text-align: center; gap: 1rem; }
+            .comic-art-viewport { height: 330px; }
+            .comic-speech-bubble { font-size: 0.95rem; padding: 0.5rem 0.9rem; max-width: 220px; }
+            .comic-narration-overlay p { font-size: 0.92rem; }
             .mode-card-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-
     <canvas id="interactive3DCanvas"></canvas>
 
     <div id="splashScreen">
         <div class="splash-main-content">
             <div class="splash-title-box">
-                <h1 class="splash-title">Kadhai<span class="hl">Verse</span></h1>
+                <h1 class="splash-title">Story<span class="hl">Zone</span></h1>
             </div>
-
             <div class="bheem-welcome-container">
                 <div class="bheem-character-card">
                     <span class="bheem-avatar-inner">👦🏾</span>
@@ -947,10 +1005,9 @@
                     <div class="bheem-speaker-name">
                         <span>💪</span> Chhota Bheem
                     </div>
-                    <p>“Dholakpur welcomes you to KadhaiVerse! Come explore 200 magical moral stories with me! ✨”</p>
+                    <p>“Dholakpur welcomes you to StoryZone! Come explore 200 magical moral stories with me! ✨”</p>
                 </div>
             </div>
-
             <button class="swipe-pill-btn" onclick="startCelebrationAndEnter()">
                 <span>🚀 swipe up to explore our stories</span>
                 <span>✨</span>
@@ -962,7 +1019,7 @@
         <canvas id="crackersCanvas"></canvas>
         <div class="celebrate-welcome-banner">
             <h1>🎉 WELCOME! 🎉</h1>
-            <p>Welcome to the 3D Moral Universe of KadhaiVerse ✨</p>
+            <p>Welcome to the 3D Moral Universe of StoryZone ✨</p>
         </div>
     </div>
 
@@ -990,14 +1047,13 @@
     <header class="site-header">
         <div class="container navbar">
             <div class="logo" onclick="goHome()">
-                <span>📖</span> Kadhai<span class="highlight">Verse</span>
+                <span>📖</span> Story<span class="highlight">Zone</span>
             </div>
-
-            <div style="display:flex; align-items:center; gap:0.8rem;">
+            <div style="display:flex; align-items:center; gap:0.9rem;">
                 <div class="current-mode-badge" onclick="openModeSelectModal()" title="Click to Switch Mode">
                     <span id="currentModeIcon">🧒</span>
                     <span id="currentModeText">Children Mode (100)</span>
-                    <small style="color:var(--primary); font-size:0.75rem;">▼ Switch</small>
+                    <small style="color:var(--primary); font-size:0.8rem; font-weight:800;">▼ Switch</small>
                 </div>
                 <button class="btn-kid btn-yellow" onclick="switchView('profileView')">⭐ My Badges</button>
                 <button class="btn-kid btn-pink" onclick="toggleTheme()" id="btnTheme">🌙</button>
@@ -1010,17 +1066,16 @@
             <div class="hero-banner-3d">
                 <div class="hero-text">
                     <span class="hero-badge-count" id="heroBadgeCount">📚 100 Children Stories Allocated</span>
-                    <h1 id="heroTitle">Welcome to KadhaiVerse! 🎈</h1>
+                    <h1 id="heroTitle">Welcome to StoryZone! 🎈</h1>
                     <p id="heroDescription">Listen slowly and steadily, read along, and master character values with 100 moral adventures and quizzes!</p>
                 </div>
-                <div style="font-size: 4.8rem;" id="heroMascotIcon">🐰🦁✨</div>
+                <div style="font-size: 5.2rem; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));" id="heroMascotIcon">🐰🦁✨</div>
             </div>
 
             <div class="magic-bar">
-                <span>🔎</span>
-                <input type="text" id="searchInput" placeholder="Search allocated 100 stories by title...">
-                <select id="categoryFilter">
-                    </select>
+                <span style="font-size: 1.5rem;">🔎</span>
+                <input type="text" id="searchInput" placeholder="Search stories by title...">
+                <select id="categoryFilter"></select>
             </div>
 
             <div class="story-grid" id="storyGrid"></div>
@@ -1030,14 +1085,12 @@
             <div class="stage-container">
                 <div class="stage-header">
                     <button class="btn-kid btn-yellow" onclick="exitToLibrary()">← Library</button>
-
                     <div class="narration-speed-bar">
                         <span>🐢 Pace:</span>
                         <button class="speed-btn" id="spdSlow" onclick="setNarrationSpeed(0.72, 'spdSlow')">Very Slow</button>
-                        <button class="speed-btn active" id="spdSteady" onclick="setNarrationSpeed(0.80, 'spdSteady')">Steady (Best)</button>
+                        <button class="speed-btn active" id="spdSteady" onclick="setNarrationSpeed(0.80, 'spdSteady')">Steady</button>
                         <button class="speed-btn" id="spdNormal" onclick="setNarrationSpeed(0.90, 'spdNormal')">Normal</button>
                     </div>
-
                     <div id="narratorBadge" class="btn-kid btn-pink hidden" style="font-size:0.95rem;">
                         <span>🎙️ <span id="lblNarrating">Auto-Narrating...</span></span>
                     </div>
@@ -1067,10 +1120,10 @@
                     <div class="parchment-quote-box">
                         <h3 id="stageMoralText"></h3>
                     </div>
-                    <p style="font-weight:700; color:#5D4037; margin-bottom:1rem;">
+                    <p style="font-weight:800; color:#5D4037; font-size:1.15rem; margin-bottom:1.2rem;">
                         Test your understanding with an interactive mini quiz!
                     </p>
-                    <button class="btn-kid btn-pink" onclick="launchQuiz()" style="font-size:1.25rem;">
+                    <button class="btn-kid btn-pink" onclick="launchQuiz()" style="font-size:1.35rem; padding:0.8rem 2.2rem;">
                         Take the Mini Quiz! 🎯
                     </button>
                 </div>
@@ -1080,13 +1133,13 @@
         <section id="quizView" class="hidden">
             <div class="stage-container">
                 <div class="quiz-stage" id="quizCard">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                        <h2 id="quizTitleDisplay" style="font-family:var(--font-display); font-size:2.2rem;">Fun Quiz!</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+                        <h2 id="quizTitleDisplay" style="font-family:var(--font-display); font-size:2.4rem;">Fun Quiz!</h2>
                         <span id="quizNumberBadge" class="btn-kid btn-yellow">Q 1/5</span>
                     </div>
-                    <h3 id="quizQuestionText" style="font-size:1.35rem; margin-bottom:1.2rem;">Question</h3>
+                    <h3 id="quizQuestionText" style="font-size:1.45rem; margin-bottom:1.4rem;">Question</h3>
                     <div id="quizOptionsBox"></div>
-                    <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
+                    <div style="display:flex; justify-content:space-between; margin-top:1.8rem;">
                         <button id="btnQuizBack" class="btn-kid btn-yellow" onclick="navigateQuiz(-1)">Prev</button>
                         <button id="btnQuizForward" class="btn-kid btn-mint" onclick="navigateQuiz(1)">Next</button>
                         <button id="btnQuizFinish" class="btn-kid btn-pink hidden" onclick="gradeQuiz()">Finish & See Stars! ⭐</button>
@@ -1094,10 +1147,10 @@
                 </div>
 
                 <div class="quiz-stage hidden" id="quizScoreCard" style="text-align:center;">
-                    <div style="font-size:4.2rem;" id="scoreEmoji">🌟</div>
-                    <h2 style="font-family:var(--font-display); font-size:2.6rem;" id="scoreHeading">Awesome Job!</h2>
-                    <p style="font-size:1.25rem; font-weight:700; margin-bottom:1.5rem;" id="scoreDetail"></p>
-                    <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+                    <div style="font-size:5rem;" id="scoreEmoji">🌟</div>
+                    <h2 style="font-family:var(--font-display); font-size:2.8rem; margin:0.5rem 0;" id="scoreHeading">Awesome Job!</h2>
+                    <p style="font-size:1.35rem; font-weight:800; margin-bottom:1.8rem;" id="scoreDetail"></p>
+                    <div style="display:flex; justify-content:center; gap:1.2rem; flex-wrap:wrap;">
                         <button class="btn-kid btn-yellow" onclick="launchQuiz()">Play Again 🔄</button>
                         <button class="btn-kid btn-pink" onclick="switchView('profileView')">My Star Badges 🏆</button>
                         <button class="btn-kid btn-mint" onclick="goHome()">More Stories 📚</button>
@@ -1108,33 +1161,33 @@
 
         <section id="profileView" class="hidden">
             <div class="stage-container">
-                <div class="hero-banner-3d" style="background:linear-gradient(135deg,#A55EEA,#54A0FF);">
+                <div class="hero-banner-3d" style="background:linear-gradient(135deg,#A55EEA,#3888FF);">
                     <div class="hero-text">
-                        <h1 style="color:white; text-shadow:2px 2px 0px #2D3436;">My Golden Star Badges 🏆</h1>
-                        <p style="color:white;">Track your completed moral tales across the 200-story treasury!</p>
+                        <h1 style="color:white; text-shadow:2px 2px 0 #1F2438;">My Golden Star Badges 🏆</h1>
+                        <p style="color:white;">Track your completed moral tales across the 200-story StoryZone treasury!</p>
                     </div>
-                    <div style="font-size:4.8rem;">⭐</div>
+                    <div style="font-size:5.2rem;">⭐</div>
                 </div>
 
-                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.2rem; margin-bottom:2rem;">
-                    <div class="comic-frame-card" style="padding:1.4rem; text-align:center; background:#FFF9E6;">
-                        <div style="font-size:2.6rem;">📖</div>
-                        <h3 id="statStoriesRead" style="font-family:var(--font-display); font-size:2rem; color:var(--primary);">0</h3>
-                        <p style="font-weight:700;">Stories Completed</p>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.5rem; margin-bottom:2rem;">
+                    <div class="comic-frame-card" style="padding:1.6rem; text-align:center; background:#FFF9E6;">
+                        <div style="font-size:3rem;">📖</div>
+                        <h3 id="statStoriesRead" style="font-family:var(--font-display); font-size:2.4rem; color:var(--primary);">0</h3>
+                        <p style="font-weight:800; font-size:1.1rem;">Stories Completed</p>
                     </div>
-                    <div class="comic-frame-card" style="padding:1.4rem; text-align:center; background:#FFF9E6;">
-                        <div style="font-size:2.6rem;">⭐</div>
-                        <h3 id="statQuizPoints" style="font-family:var(--font-display); font-size:2rem; color:var(--secondary);">0</h3>
-                        <p style="font-weight:700;">Quiz Stars Earned</p>
+                    <div class="comic-frame-card" style="padding:1.6rem; text-align:center; background:#FFF9E6;">
+                        <div style="font-size:3rem;">⭐</div>
+                        <h3 id="statQuizPoints" style="font-family:var(--font-display); font-size:2.4rem; color:var(--secondary);">0</h3>
+                        <p style="font-weight:800; font-size:1.1rem;">Quiz Stars Earned</p>
                     </div>
                 </div>
 
-                <div class="comic-frame-card" style="padding:1.6rem;">
-                    <h3 style="font-family:var(--font-display); font-size:1.8rem; margin-bottom:1rem;">Treasury Badges</h3>
-                    <div id="starsBadgeList" style="display:flex; flex-wrap:wrap; gap:0.8rem;"></div>
+                <div class="comic-frame-card" style="padding:2rem;">
+                    <h3 style="font-family:var(--font-display); font-size:2rem; margin-bottom:1.2rem;">Treasury Badges</h3>
+                    <div id="starsBadgeList" style="display:flex; flex-wrap:wrap; gap:0.9rem;"></div>
                 </div>
 
-                <div style="text-align:center; margin-top:2rem;">
+                <div style="text-align:center; margin-top:2.2rem;">
                     <button class="btn-kid btn-yellow" onclick="goHome()">← Back to Stories</button>
                     <button class="btn-kid btn-pink" onclick="resetStarsData()" style="margin-left:1rem;">Reset My Data</button>
                 </div>
@@ -1143,25 +1196,23 @@
     </main>
 
     <div class="modal-overlay hidden" id="modeModal">
-        <div class="mode-popup">
-            <div style="font-size:3.2rem;">✨</div>
+        <div class="mode-select-box" style="max-width:520px;">
+            <div style="font-size:3.5rem;">✨</div>
             <h2 id="modalStoryTitle">Story Title</h2>
-            <p style="font-size:1.1rem; font-weight:700; color:#636E72;">Choose how you want to experience this comic:</p>
-
-            <div class="mode-choice-grid">
-                <div class="mode-card read-mode" onclick="startStoryExperience('read')">
-                    <span class="icon">📖</span>
+            <p style="font-size:1.15rem; font-weight:700; color:#576574;">Choose how you want to experience this comic:</p>
+            <div class="mode-card-grid">
+                <div class="profile-mode-card card-children-theme" onclick="startStoryExperience('read')">
+                    <span class="icon" style="font-size:3.2rem;">📖</span>
                     <strong>Read Mode</strong>
-                    <small>Read each scene at your own speed.</small>
+                    <small>Read at your own pace.</small>
                 </div>
-                <div class="mode-card narrate-mode" onclick="startStoryExperience('narrate')">
-                    <span class="icon">🎙️</span>
+                <div class="profile-mode-card card-student-theme" onclick="startStoryExperience('narrate')">
+                    <span class="icon" style="font-size:3.2rem;">🎙️</span>
                     <strong>Narrate Mode</strong>
-                    <small>Voice reads slowly & turns pages steadily!</small>
+                    <small>Voice reads & auto-advances!</small>
                 </div>
             </div>
-
-            <button class="btn-kid btn-yellow" onclick="closeModeModal()">Cancel</button>
+            <button class="btn-kid btn-yellow" onclick="closeModeModal()" style="margin-top:1rem;">Cancel</button>
         </div>
     </div>
 
@@ -1169,54 +1220,57 @@
         function initSafe3DBackground() {
             const canvas = document.getElementById('interactive3DCanvas');
             if (!canvas) return;
-
             if (typeof THREE !== 'undefined') {
                 try {
                     const scene = new THREE.Scene();
                     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
                     camera.position.z = 24;
-
                     const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
                     renderer.setSize(window.innerWidth, window.innerHeight);
                     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
                     scene.add(ambientLight);
 
-                    const dirLight = new THREE.DirectionalLight(0xffdf00, 1.2);
+                    const dirLight = new THREE.DirectionalLight(0xffd200, 1.4);
                     dirLight.position.set(15, 20, 15);
                     scene.add(dirLight);
+
+                    const dirLight2 = new THREE.DirectionalLight(0x00e5ff, 0.8);
+                    dirLight2.position.set(-15, -15, 10);
+                    scene.add(dirLight2);
 
                     const floatingGroup = new THREE.Group();
                     scene.add(floatingGroup);
 
-                    const colors = [0xFF5E7E, 0xFFA41B, 0x00D2D3, 0x1DD1A1, 0x54A0FF, 0xFFDF00];
+                    const colors = [0xFF3366, 0xFF9F1A, 0x00E5FF, 0x00F298, 0x3888FF, 0xFFD200, 0x9B51E0];
                     const geometries = [
-                        new THREE.DodecahedronGeometry(1.4, 0),
-                        new THREE.TorusGeometry(1.2, 0.4, 12, 24),
-                        new THREE.OctahedronGeometry(1.3, 0),
-                        new THREE.SphereGeometry(1.2, 16, 16)
+                        new THREE.DodecahedronGeometry(1.5, 0),
+                        new THREE.TorusGeometry(1.3, 0.45, 16, 32),
+                        new THREE.OctahedronGeometry(1.4, 0),
+                        new THREE.IcosahedronGeometry(1.3, 0),
+                        new THREE.SphereGeometry(1.2, 24, 24)
                     ];
 
-                    for (let i = 0; i < 30; i++) {
+                    for (let i = 0; i < 35; i++) {
                         const geom = geometries[i % geometries.length];
                         const mat = new THREE.MeshPhongMaterial({
                             color: colors[i % colors.length],
-                            shininess: 90,
+                            shininess: 100,
                             flatShading: true,
                             transparent: true,
-                            opacity: 0.82
+                            opacity: 0.85
                         });
                         const mesh = new THREE.Mesh(geom, mat);
                         mesh.position.set(
-                            (Math.random() - 0.5) * 44,
-                            (Math.random() - 0.5) * 34,
-                            (Math.random() - 0.5) * 18
+                            (Math.random() - 0.5) * 46,
+                            (Math.random() - 0.5) * 36,
+                            (Math.random() - 0.5) * 20
                         );
                         mesh.userData = {
-                            rotX: (Math.random() - 0.5) * 0.02,
-                            rotY: (Math.random() - 0.5) * 0.02,
-                            floatSpeed: 0.005 + Math.random() * 0.015
+                            rotX: (Math.random() - 0.5) * 0.025,
+                            rotY: (Math.random() - 0.5) * 0.025,
+                            floatSpeed: 0.006 + Math.random() * 0.018
                         };
                         floatingGroup.add(mesh);
                     }
@@ -1232,7 +1286,7 @@
                         floatingGroup.children.forEach(child => {
                             child.rotation.x += child.userData.rotX;
                             child.rotation.y += child.userData.rotY;
-                            child.position.y += Math.sin(Date.now() * child.userData.floatSpeed) * 0.015;
+                            child.position.y += Math.sin(Date.now() * child.userData.floatSpeed) * 0.02;
                         });
                         renderer.render(scene, camera);
                     }
@@ -1246,12 +1300,12 @@
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            const stars = Array.from({ length: 45 }, () => ({
+            const stars = Array.from({ length: 50 }, () => ({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                size: Math.random() * 6 + 2,
-                color: ['#FF5E7E', '#FFA41B', '#54A0FF', '#1DD1A1', '#FFDF00'][Math.floor(Math.random() * 5)],
-                speed: Math.random() * 0.6 + 0.2
+                size: Math.random() * 7 + 2,
+                color: ['#FF3366', '#FF9F1A', '#3888FF', '#00F298', '#FFD200'][Math.floor(Math.random() * 5)],
+                speed: Math.random() * 0.7 + 0.3
             }));
 
             function drawFallback() {
@@ -1269,7 +1323,7 @@
             drawFallback();
         }
 
-        // 3D Crackers Celebration Animation
+        // 3D Crackers Celebration
         function trigger3DCrackersBlast(callback) {
             const overlay = document.getElementById('crackersCelebrationOverlay');
             overlay.classList.remove('hidden');
@@ -1279,50 +1333,48 @@
             cCanvas.height = window.innerHeight;
 
             const particles = [];
-            const burstColors = ['#FFDF00', '#FF5E7E', '#00D2D3', '#1DD1A1', '#54A0FF', '#FFA41B', '#FFFFFF'];
+            const burstColors = ['#FFD200', '#FF3366', '#00E5FF', '#00F298', '#3888FF', '#FF9F1A', '#FFFFFF', '#9B51E0'];
             const centers = [
-                { x: cCanvas.width * 0.5, y: cCanvas.height * 0.45 },
-                { x: cCanvas.width * 0.25, y: cCanvas.height * 0.35 },
-                { x: cCanvas.width * 0.75, y: cCanvas.height * 0.35 },
-                { x: cCanvas.width * 0.35, y: cCanvas.height * 0.6 },
-                { x: cCanvas.width * 0.65, y: cCanvas.height * 0.6 }
+                { x: cCanvas.width * 0.5, y: cCanvas.height * 0.42 },
+                { x: cCanvas.width * 0.22, y: cCanvas.height * 0.32 },
+                { x: cCanvas.width * 0.78, y: cCanvas.height * 0.32 },
+                { x: cCanvas.width * 0.32, y: cCanvas.height * 0.62 },
+                { x: cCanvas.width * 0.68, y: cCanvas.height * 0.62 }
             ];
 
             centers.forEach(center => {
-                for (let i = 0; i < 65; i++) {
+                for (let i = 0; i < 75; i++) {
                     const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 9 + 3;
+                    const speed = Math.random() * 11 + 3;
                     particles.push({
                         x: center.x,
                         y: center.y,
                         vx: Math.cos(angle) * speed,
                         vy: Math.sin(angle) * speed,
-                        size: Math.random() * 5 + 3,
+                        size: Math.random() * 6 + 3,
                         color: burstColors[Math.floor(Math.random() * burstColors.length)],
                         alpha: 1,
-                        decay: Math.random() * 0.015 + 0.01
+                        decay: Math.random() * 0.016 + 0.01
                     });
                 }
             });
 
             let animId;
             function blastLoop() {
-                ctx.fillStyle = 'rgba(15, 10, 35, 0.2)';
+                ctx.fillStyle = 'rgba(12, 9, 32, 0.22)';
                 ctx.fillRect(0, 0, cCanvas.width, cCanvas.height);
-
                 let alive = 0;
                 particles.forEach(p => {
                     p.x += p.vx;
                     p.y += p.vy;
-                    p.vy += 0.12;
+                    p.vy += 0.14;
                     p.alpha -= p.decay;
-
                     if (p.alpha > 0) {
                         alive++;
                         ctx.save();
                         ctx.globalAlpha = p.alpha;
                         ctx.fillStyle = p.color;
-                        ctx.shadowBlur = 12;
+                        ctx.shadowBlur = 15;
                         ctx.shadowColor = p.color;
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -1330,7 +1382,6 @@
                         ctx.restore();
                     }
                 });
-
                 if (alive > 0) {
                     animId = requestAnimationFrame(blastLoop);
                 } else {
@@ -1339,19 +1390,16 @@
                     if (callback) callback();
                 }
             }
-
             blastLoop();
-
             setTimeout(() => {
                 cancelAnimationFrame(animId);
                 overlay.classList.add('hidden');
                 if (callback) callback();
-            }, 2300);
+            }, 2400);
         }
 
-        // 200 STORIES SPECIFICATION (1-100 CHILDREN, 101-200 STUDENT)
+        // 200 Stories Setup
         const RAW_CATEGORIES = [
-            // --- 1 to 10: CHILDREN MODE (Stories 1 to 100) ---
             {
                 mode: "children",
                 name: "Village & Traditional",
@@ -1492,8 +1540,7 @@
                 ],
                 leftChar: "👑", rightChar: "🛡️"
             },
-
-            // --- 11 to 20: STUDENT MODE (Stories 101 to 200) ---
+            // STUDENT MODE (Stories 101 to 200)
             {
                 mode: "student",
                 name: "Travel & Adventure",
@@ -1638,10 +1685,8 @@
 
         const allStories = [];
         let globalId = 1;
-
         RAW_CATEGORIES.forEach(cat => {
             const isStudent = (cat.mode === "student");
-
             cat.titles.forEach(storyTitle => {
                 const scenes = isStudent ? [
                     {
@@ -1711,7 +1756,7 @@
                     id: globalId,
                     title: storyTitle,
                     category: cat.name,
-                    targetMode: cat.mode, // "children" (1-100) or "student" (101-200)
+                    targetMode: cat.mode,
                     icon: cat.icon,
                     bg: cat.bg,
                     moral: cat.moral,
@@ -1728,53 +1773,57 @@
             });
         });
 
-        // 3D Comic SVG Generator
+        // 3D Comic Art SVG Generator
         function generateComicArtSVG(sceneIdx, themeBg, charLeft, charRight, decor) {
             return `
-            <svg class="comic-art-svg" viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg">
+            <svg class="comic-art-svg" viewBox="0 0 700 440" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="skyGrad_${sceneIdx}" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stop-color="${themeBg[0]}"/>
                         <stop offset="100%" stop-color="${themeBg[1]}"/>
                     </linearGradient>
                     <radialGradient id="sunGlow_${sceneIdx}" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="#FFF8E1" stop-opacity="0.9"/>
-                        <stop offset="100%" stop-color="#FFE082" stop-opacity="0"/>
+                        <stop offset="0%" stop-color="#FFFDE4" stop-opacity="0.95"/>
+                        <stop offset="100%" stop-color="#FFEAA7" stop-opacity="0"/>
                     </radialGradient>
-                    <filter id="soft3DShadow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#1E272E" flood-opacity="0.25"/>
+                    <filter id="pop3DShadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="12" stdDeviation="8" flood-color="#0B0D19" flood-opacity="0.32"/>
                     </filter>
                 </defs>
-                <rect width="700" height="420" fill="url(#skyGrad_${sceneIdx})"/>
-                <circle cx="350" cy="180" r="160" fill="url(#sunGlow_${sceneIdx})"/>
-                <path d="M 0 280 Q 200 210 400 260 T 700 240 L 700 420 L 0 420 Z" fill="#2E7D32" opacity="0.65"/>
-                <path d="M 0 310 Q 150 260 380 290 T 700 280 L 700 420 L 0 420 Z" fill="#43A047" opacity="0.85"/>
-                <path d="M 0 350 Q 250 310 500 340 T 700 330 L 700 420 L 0 420 Z" fill="#8D6E63"/>
+                <rect width="700" height="440" fill="url(#skyGrad_${sceneIdx})"/>
+                <circle cx="350" cy="170" r="170" fill="url(#sunGlow_${sceneIdx})"/>
+                
+                <!-- 3D Layered Hills -->
+                <path d="M 0 270 Q 200 190 420 250 T 700 230 L 700 440 L 0 440 Z" fill="#1B5E20" opacity="0.6"/>
+                <path d="M 0 300 Q 160 240 390 280 T 700 270 L 700 440 L 0 440 Z" fill="#2E7D32" opacity="0.8"/>
+                <path d="M 0 340 Q 240 290 520 330 T 700 320 L 700 440 L 0 440 Z" fill="#43A047"/>
+                <path d="M 0 380 Q 260 350 490 370 T 700 360 L 700 440 L 0 440 Z" fill="#6D4C41"/>
+
                 ${decor === 'sign' ? `
-                    <g transform="translate(520, 95)">
-                        <rect x="25" y="45" width="12" height="70" fill="#5D4037" rx="3"/>
-                        <rect x="0" y="0" width="120" height="55" rx="8" fill="#795548" stroke="#3E2723" stroke-width="3"/>
-                        <text x="60" y="24" font-family="'Fredoka', sans-serif" font-weight="700" font-size="14" fill="#FFE082" text-anchor="middle">GREEN</text>
-                        <text x="60" y="44" font-family="'Fredoka', sans-serif" font-weight="700" font-size="14" fill="#FFE082" text-anchor="middle">FOREST</text>
+                    <g transform="translate(520, 110)" filter="url(#pop3DShadow)">
+                        <rect x="25" y="45" width="14" height="85" fill="#4E342E" rx="4"/>
+                        <rect x="0" y="0" width="130" height="60" rx="12" fill="#795548" stroke="#3E2723" stroke-width="4"/>
+                        <text x="65" y="26" font-family="'Fredoka', sans-serif" font-weight="800" font-size="15" fill="#FFE082" text-anchor="middle">STORYZONE</text>
+                        <text x="65" y="48" font-family="'Fredoka', sans-serif" font-weight="700" font-size="13" fill="#FFF8E1" text-anchor="middle">VALLEY</text>
                     </g>` : ''}
-                ${decor === 'mud' ? `<ellipse cx="430" cy="355" rx="80" ry="25" fill="#4E342E" opacity="0.85"/>` : ''}
+                ${decor === 'mud' ? `<ellipse cx="430" cy="370" rx="90" ry="26" fill="#3E2723" opacity="0.85"/>` : ''}
                 ${decor === 'sunset' ? `
-                    <ellipse cx="350" cy="220" rx="200" ry="40" fill="#FFE082" opacity="0.4"/>
-                    <circle cx="350" cy="190" r="35" fill="#FFA726"/>` : ''}
-                <g filter="url(#soft3DShadow)" transform="translate(180, 270)">
-                    <ellipse cx="0" cy="50" rx="55" ry="16" fill="#1E272E" opacity="0.25"/>
-                    <text x="0" y="40" font-size="115" text-anchor="middle">${charLeft}</text>
+                    <ellipse cx="350" cy="210" rx="220" ry="45" fill="#FFE082" opacity="0.5"/>
+                    <circle cx="350" cy="180" r="40" fill="#FFA726" filter="url(#pop3DShadow)"/>` : ''}
+
+                <g filter="url(#pop3DShadow)" transform="translate(180, 275)">
+                    <ellipse cx="0" cy="55" rx="60" ry="18" fill="#1F2438" opacity="0.3"/>
+                    <text x="0" y="40" font-size="120" text-anchor="middle">${charLeft}</text>
                 </g>
                 ${charRight ? `
-                <g filter="url(#soft3DShadow)" transform="translate(480, 280)">
-                    <ellipse cx="0" cy="45" rx="50" ry="14" fill="#1E272E" opacity="0.25"/>
-                    <text x="0" y="35" font-size="100" text-anchor="middle">${charRight}</text>
+                <g filter="url(#pop3DShadow)" transform="translate(490, 285)">
+                    <ellipse cx="0" cy="50" rx="55" ry="16" fill="#1F2438" opacity="0.3"/>
+                    <text x="0" y="35" font-size="105" text-anchor="middle">${charRight}</text>
                 </g>` : ''}
             </svg>`;
         }
 
-        // App State & Mode Routing
-        let currentAppMode = "children"; // "children" (1-100) or "student" (101-200)
+        let currentAppMode = "children";
         let activeStory = null;
         let currentSceneIdx = 0;
         let storyMode = 'read';
@@ -1782,15 +1831,14 @@
         let speechRate = 0.80;
         let speechKeepAliveInterval = null;
         let autoAdvanceTimer = null;
+        const STORE_KEY = "storyzone_200_progress_final";
 
-        const STORE_KEY = "kadhai_200_progress_final";
         function getProgress() {
             const raw = localStorage.getItem(STORE_KEY);
             return raw ? JSON.parse(raw) : { completed: [], points: 0 };
         }
         function saveProgress(p) { localStorage.setItem(STORE_KEY, JSON.stringify(p)); }
 
-        // Start 3D Crackers Explosion & Proceed
         function startCelebrationAndEnter() {
             trigger3DCrackersBlast(() => {
                 document.getElementById('splashScreen').classList.add('slide-up');
@@ -1817,14 +1865,12 @@
             document.getElementById('currentModeText').textContent = isChildren ? "Children Mode (100)" : "Student Mode (100)";
             document.getElementById('heroBadgeCount').textContent = isChildren ? "📚 100 Children Stories Allocated (Stories 1 to 100)" : "📚 100 Student Stories Allocated (Stories 101 to 200)";
             document.getElementById('heroMascotIcon').textContent = isChildren ? "🐰🦁✨" : "🚀🔬🎓";
-            document.getElementById('heroDescription').textContent = isChildren ? 
-                "Listen slowly and steadily, read along, and master character values with gentle cartoon fables and quizzes!" :
+            document.getElementById('heroDescription').textContent = isChildren ?
+                 "Listen slowly and steadily, read along, and master character values with gentle cartoon fables and quizzes!" :
                 "Explore mature ethical scenarios, decision-making, and critical thinking with 100 dedicated student tales!";
 
-            // Repopulate Categories dropdown for current mode (10 genres per mode)
             const catSelect = document.getElementById('categoryFilter');
             catSelect.innerHTML = `<option value="All">🌈 All Genres in ${isChildren ? "Children" : "Student"} Mode (100 Stories)</option>`;
-            
             const activeGenres = RAW_CATEGORIES.filter(g => g.mode === currentAppMode);
             activeGenres.forEach((g, idx) => {
                 const opt = document.createElement('option');
@@ -1843,16 +1889,13 @@
             }
         }
 
-        // Render EXACT 100 stories allocated to the selected mode
         function renderStoryCards() {
             const grid = document.getElementById('storyGrid');
             const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
             const catVal = document.getElementById('categoryFilter').value;
             const prog = getProgress();
 
-            // Filter strictly by currentAppMode ("children" -> stories 1-100, "student" -> stories 101-200)
             const allocatedPool = allStories.filter(s => s.targetMode === currentAppMode);
-
             const filtered = allocatedPool.filter(s => {
                 const titleMatch = s.title.toLowerCase().includes(searchVal);
                 const catMatch = (catVal === 'All') || (s.category === catVal);
@@ -1875,13 +1918,13 @@
                 card.onclick = () => openModePrompt(story);
                 card.innerHTML = `
                     <div class="story-thumb-box" style="background: linear-gradient(135deg, ${story.bg[0]}, ${story.bg[1]});">
-                        <span style="font-size: 4.8rem; filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.18));">${story.icon}</span>
+                        <span class="icon-3d">${story.icon}</span>
                         ${isRead ? '<span class="card-badge">⭐ Completed</span>' : ''}
                     </div>
                     <div class="story-body">
                         <span class="story-moral-chip">🌟 ${story.category}</span>
                         <h3>${story.title}</h3>
-                        <p style="font-weight:700; color:#636E72; font-size:0.92rem; margin-bottom:0.8rem;">
+                        <p style="font-weight:700; color:#576574; font-size:0.95rem; margin-bottom:0.9rem;">
                             ${story.scenes[0].narration.substring(0, 68)}...
                         </p>
                         <button class="btn-kid btn-pink" style="width:100%;">
@@ -1898,6 +1941,7 @@
             document.getElementById('modalStoryTitle').textContent = story.title;
             document.getElementById('modeModal').classList.remove('hidden');
         }
+
         function closeModeModal() {
             document.getElementById('modeModal').classList.add('hidden');
         }
@@ -1908,7 +1952,6 @@
             currentSceneIdx = 0;
             switchView('storyView');
             renderActiveScene();
-
             const badge = document.getElementById('narratorBadge');
             if (mode === 'narrate') {
                 badge.classList.remove('hidden');
@@ -1924,16 +1967,13 @@
         function renderActiveScene() {
             if (!activeStory) return;
             const totalScenes = activeStory.scenes.length;
-
             if (currentSceneIdx < totalScenes) {
                 document.getElementById('comicSceneFrame').classList.remove('hidden');
                 document.getElementById('sceneControlButtons').classList.remove('hidden');
                 document.getElementById('woodenMoralBoard').classList.add('hidden');
-
                 const scene = activeStory.scenes[currentSceneIdx];
                 document.getElementById('sceneNumberBadge').textContent = currentSceneIdx + 1;
                 document.getElementById('sceneCountTag').textContent = `Scene ${currentSceneIdx + 1} / ${totalScenes + 1}`;
-
                 const speechBubble = document.getElementById('sceneSpeechBubble');
                 if (scene.dialogue && scene.dialogue.trim() !== "") {
                     speechBubble.classList.remove('hidden');
@@ -1941,20 +1981,16 @@
                 } else {
                     speechBubble.classList.add('hidden');
                 }
-
                 const artArea = document.getElementById('comicIllustrationArea');
                 artArea.innerHTML = generateComicArtSVG(currentSceneIdx, scene.artBg, scene.charLeft, scene.charRight, scene.decor);
-
                 document.getElementById('sceneNarrationText').textContent = scene.narration;
                 document.getElementById('btnPrevScene').disabled = (currentSceneIdx === 0);
             } else {
                 document.getElementById('comicSceneFrame').classList.add('hidden');
                 document.getElementById('sceneControlButtons').classList.add('hidden');
                 document.getElementById('woodenMoralBoard').classList.remove('hidden');
-
                 document.getElementById('sceneCountTag').textContent = `Moral ✨`;
                 document.getElementById('stageMoralText').textContent = `"${activeStory.moral}"`;
-
                 const prog = getProgress();
                 if (!prog.completed.includes(activeStory.id)) {
                     prog.completed.push(activeStory.id);
@@ -1981,9 +2017,7 @@
         function readActiveSceneAloud(isAuto = false) {
             stopVoice();
             if (!('speechSynthesis' in window)) return;
-
             window.speechSynthesis.resume();
-
             let textToSpeak = "";
             if (currentSceneIdx >= activeStory.scenes.length) {
                 textToSpeak = `Moral of the story... ${activeStory.moral}`;
@@ -1992,12 +2026,10 @@
                 const dlg = scene.dialogue ? `... Character says: "${scene.dialogue}"` : '';
                 textToSpeak = `${scene.narration} ${dlg}`;
             }
-
             window._currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
             window._currentUtterance.lang = 'en-US';
             window._currentUtterance.rate = speechRate;
             window._currentUtterance.pitch = 1.05;
-
             const voices = window.speechSynthesis.getVoices();
             const preferredVoice = voices.find(v => v.lang.includes('en') && (
                 v.name.includes('Natural') ||
@@ -2009,35 +2041,29 @@
             if (preferredVoice) {
                 window._currentUtterance.voice = preferredVoice;
             }
-
             isNarrating = true;
             let completionFired = false;
-
             const handleComplete = () => {
                 if (completionFired) return;
                 completionFired = true;
                 stopVoice();
-
                 if (storyMode === 'narrate' && currentSceneIdx <= activeStory.scenes.length) {
                     autoAdvanceTimer = setTimeout(() => {
                         stepScene(1);
                     }, 1800);
                 }
             };
-
             window._currentUtterance.onend = handleComplete;
             window._currentUtterance.onerror = (err) => {
                 console.warn("Speech notice:", err);
                 handleComplete();
             };
-
             speechKeepAliveInterval = setInterval(() => {
                 if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
                     window.speechSynthesis.pause();
                     window.speechSynthesis.resume();
                 }
             }, 10000);
-
             const wordCount = textToSpeak.split(/\s+/).length;
             const estimatedMs = Math.max(4500, (wordCount / (speechRate * 2.2)) * 1000 + 1500);
             autoAdvanceTimer = setTimeout(() => {
@@ -2045,7 +2071,6 @@
                     handleComplete();
                 }
             }, estimatedMs);
-
             window.speechSynthesis.speak(window._currentUtterance);
         }
 
@@ -2086,10 +2111,8 @@
         function renderQuizQ() {
             const q = activeStory.quiz[quizIdx];
             const total = activeStory.quiz.length;
-
             document.getElementById('quizNumberBadge').textContent = `Q ${quizIdx + 1} / ${total}`;
             document.getElementById('quizQuestionText').textContent = q.q;
-
             const box = document.getElementById('quizOptionsBox');
             box.innerHTML = '';
             q.o.forEach((opt, idx) => {
@@ -2103,11 +2126,9 @@
                 };
                 box.appendChild(item);
             });
-
             document.getElementById('btnQuizBack').disabled = (quizIdx === 0);
             const fwdBtn = document.getElementById('btnQuizForward');
             const finBtn = document.getElementById('btnQuizFinish');
-
             if (quizIdx === total - 1) {
                 fwdBtn.classList.add('hidden');
                 finBtn.classList.remove('hidden');
@@ -2133,20 +2154,16 @@
                 renderQuizQ();
                 return;
             }
-
             let score = 0;
             activeStory.quiz.forEach((q, i) => {
                 if (selectedAnswers[i] === q.a) score++;
             });
-
             const prog = getProgress();
             prog.points += score;
             saveProgress(prog);
-
             document.getElementById('quizCard').classList.add('hidden');
             document.getElementById('quizScoreCard').classList.remove('hidden');
             document.getElementById('scoreDetail').textContent = `You earned ${score} out of ${activeStory.quiz.length} Stars!`;
-
             if (score >= 4) {
                 document.getElementById('scoreEmoji').textContent = "👑";
                 document.getElementById('scoreHeading').textContent = "Superstar Champion!";
@@ -2174,20 +2191,18 @@
             const prog = getProgress();
             document.getElementById('statStoriesRead').textContent = `${prog.completed.length} / 200`;
             document.getElementById('statQuizPoints').textContent = prog.points;
-
             const badgeBox = document.getElementById('starsBadgeList');
             badgeBox.innerHTML = '';
             if (prog.completed.length === 0) {
-                badgeBox.innerHTML = `<p style="font-weight:700; color:#636E72;">Read your first moral tale from the library to unlock bright golden badges!</p>`;
+                badgeBox.innerHTML = `<p style="font-weight:700; color:#576574;">Read your first moral tale from the library to unlock bright golden badges!</p>`;
                 return;
             }
-
             prog.completed.forEach(id => {
                 const st = allStories.find(s => s.id === id);
                 if (st) {
                     const pill = document.createElement('div');
                     pill.className = 'btn-kid btn-yellow';
-                    pill.style.fontSize = '0.92rem';
+                    pill.style.fontSize = '0.95rem';
                     pill.innerHTML = `⭐ ${st.title} (${st.targetMode === 'student' ? 'Student' : 'Children'})`;
                     badgeBox.appendChild(pill);
                 }
@@ -2211,7 +2226,6 @@
 
         document.getElementById('searchInput').addEventListener('input', renderStoryCards);
         document.getElementById('categoryFilter').addEventListener('change', renderStoryCards);
-
         window.addEventListener('DOMContentLoaded', () => {
             initSafe3DBackground();
             updateModeDisplayUI();
